@@ -1,25 +1,28 @@
 <template>
   <div class="container mx-auto w-1/2 py-8">
+    <Title>{{ $route.params.id }} | {{ title }}</Title>
     <h3 class="text-3xl font-bold">
-      <NuxtLink :to="`/posts/1`">Title of Post</NuxtLink>
+      <NuxtLink :to="`/posts/1`">{{ post.title }}</NuxtLink>
     </h3>
     <div class="post-meta text-gray-700 flex items-center space-x-2">
-      <div>Feb 2, 2022</div>
+      <div>{{ format(new Date(post.created_at), 'MMM dd, yyyy') }}</div>
       <div>&middot;</div>
-      <div>Andre Madarang</div>
+      <div>{{ post.user.name }}</div>
     </div>
     <div class="post-content mt-4">
-      {{ $route.params.id }} Lorem ipsum dolor sit amet consectetur, adipisicing
-      elit. Laboriosam, tempore adipisci deleniti at optio iste dolores delectus
-      voluptatum fugit, sequi quos in ullam eos quisquam mollitia doloremque eum
-      vel quam facilis laborum blanditiis officiis, accusantium necessitatibus
-      fugiat! Eum, voluptas repellendus sint officiis et, vel doloremque rerum
-      distinctio voluptate ea voluptates neque mollitia omnis saepe voluptatem?
-      Ab, maxime at sunt laborum fuga a. Ex id eligendi excepturi eaque
-      voluptatem aut iure, minima quo dolor quasi repellat voluptas a cupiditate
-      tenetur ratione perferendis itaque doloremque? Dignissimos sit
-      reprehenderit blanditiis ut illo odio veniam iste officiis fugiat. Odio
-      nostrum voluptatibus nam suscipit expedita?
+      {{ post.body }}
     </div>
   </div>
 </template>
+
+<script setup>
+import { format } from 'date-fns'
+const title = useState('title')
+const route = useRoute()
+
+//const { data: post } = await useFetch(`/api/posts/${route.params.id}`, {
+//  baseURL: 'http://127.0.0.1:8000',
+//})
+
+const post = await useNuxtApp().$apiFetch(`/api/posts/${route.params.id}`)
+</script>
