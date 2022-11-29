@@ -62,6 +62,9 @@
   </template>
   
 <script setup>
+definePageMeta({
+    middleware: ['guest']
+})
 const name = ref('')
 const email = ref('')
 const password = ref('')
@@ -88,6 +91,10 @@ async function register() {
             password_confirmation: passwordConfirmation.value,
         },
     })
+    const user = await $apiFetch('/api/user')
+    const { setUser } = useAuth();
+    setUser(user.name);
+
     alert('Registered')
     window.location.pathname = "/"
     }catch(err){

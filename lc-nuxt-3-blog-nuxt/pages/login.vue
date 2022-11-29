@@ -42,6 +42,9 @@
   </template>
   
 <script setup>
+definePageMeta({
+    middleware: ['guest']
+})
 const email = ref('')
 const password = ref('')
 const errors = ref([])
@@ -64,6 +67,11 @@ async function login() {
             password: password.value,
         },
     })
+  
+    const user = await $apiFetch('/api/user')
+    const { setUser } = useAuth();
+    setUser(user.name);
+
     alert('Loggin')
     window.location.pathname = "/my-info"
     }catch(err){
