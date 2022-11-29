@@ -8,14 +8,18 @@
         </div>
         <div>
           <ul class="flex space-x-12">
-            <li><NuxtLink to="/">Home</NuxtLink></li>
-            <li><NuxtLink to="/login">Login</NuxtLink></li>
-            <li><NuxtLink to="/register">Register</NuxtLink></li>
-            <li><NuxtLink to="/my-info">My Info</NuxtLink></li>
-            <li><NuxtLink to="/create">Create</NuxtLink></li>
-            <li><NuxtLink to="#" @click="logout">Logout</NuxtLink></li>
-            <li><NuxtLink to="/about">About</NuxtLink></li>
-            
+            <ClientOnly>
+              <li><NuxtLink to="/">Home</NuxtLink></li>
+              <li v-if="!isLoggedIn"><NuxtLink to="/login">Login</NuxtLink></li>
+              <li v-if="!isLoggedIn"><NuxtLink to="/register">Register</NuxtLink></li>
+              <li v-if="isLoggedIn"><NuxtLink to="/my-info">My Info</NuxtLink></li>
+              <li v-if="isLoggedIn"><NuxtLink to="/create">Create</NuxtLink></li>
+              <li><NuxtLink to="/about">About</NuxtLink></li>
+              <li v-if="isLoggedIn">
+                <a href="#" @click.prevent="logout">Logout</a>
+              </li>
+              <li>{{ getUser()?.name }}</li>
+            </ClientOnly>
           </ul>
         </div>
       </div>
@@ -26,9 +30,8 @@
 
 <script setup>
 const title = useState('title', () => 'Nuxt 3 Blog')
-
 const {$apiFetch} = useNuxtApp();
-
+const { removeUser, isLoggedIn,getUser } = useAuth();
 async function logout(){
   try{
     await $apiFetch('/logout', {
@@ -37,6 +40,8 @@ async function logout(){
   }catch(err){
     console.log(err.data);
   }finally{
+
+    removeUser();
     window.location.pathname = "/"
   }
 }
